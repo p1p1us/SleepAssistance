@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_main_background">
+
+    <ImageView
+        android:id="@+id/cy_head"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_marginLeft="15dp"
+        android:tint="@color/white"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/user_icon_default" />
+
+    <TextView
+        android:id="@+id/nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/cy_head"
+        android:layout_marginLeft="15dp"
+        android:layout_toRightOf="@+id/cy_head"
+        android:text="昵称"
+        android:textColor="@color/white"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/nickname"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="15dp"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/cy_head"
+        android:layout_alignLeft="@+id/nickname"
+        android:layout_alignRight="@+id/date"
+        android:layout_marginBottom="10dp"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:textColor="@color/white"
+        android:text="内容"
+        android:textSize="10sp" />
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_below="@+id/content"
+        android:layout_marginTop="10dp"
+        android:background="@color/blue" />
+
+    <LinearLayout
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/line"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/accept_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/blue"
+            android:text="欣然同意"
+            android:textColor="@color/white"
+            android:textSize="16dp" />
+
+        <Button
+            android:id="@+id/decline_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:text="残忍拒绝"
+            android:textColor="@color/darkgray"
+            android:textSize="16dp" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_below="@+id/button"
+        android:background="@color/blue" />
+
+
+</RelativeLayout>

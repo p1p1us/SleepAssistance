@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_detect"
+            android:icon="@drawable/ic_menu_chart"
+            android:title="监测" />
+        <item
+            android:id="@+id/nav_trend"
+            android:icon="@drawable/report_l"
+            android:title="趋势" />
+        <item
+            android:id="@+id/nav_helper"
+            android:icon="@drawable/ic_menu_restriction"
+            android:title="睡眠辅助" />
+        <item
+            android:id="@+id/nav_sort"
+            android:icon="@drawable/rank2"
+            android:title="排行榜" />
+        <item
+            android:id="@+id/nav_mySets"
+            android:icon="@drawable/ic_menu_about"
+            android:title="我的设备" />
+        <item
+            android:id="@+id/nav_calendar"
+            android:visible="false"
+            android:icon="@drawable/ic_menu_calendar"
+            android:title="@string/nav_string_calendar" />
+        <item
+            android:id="@+id/nav_chart"
+            android:visible="false"
+            android:icon="@drawable/ic_menu_chart"
+            android:title="@string/nav_string_chart" />
+        <item
+            android:id="@+id/nav_restriction"
+            android:icon="@drawable/ic_menu_restriction"
+            android:visible="false"
+            android:title="@string/nav_string_restriction" />
+        <item
+            android:id="@+id/nav_set"
+            android:icon="@drawable/ic_menu_set"
+            android:title="@string/action_settings" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_send"
+                android:visible="false"
+                android:icon="@drawable/ic_menu_edit"
+                android:title="@string/nav_string_feedback" />
+            <item
+                android:id="@+id/nav_share"
+                android:visible="false"
+                android:icon="@drawable/ic_menu_share"
+                android:title="@string/nav_string_share" />
+            <item
+                android:id="@+id/nav_about"
+                android:visible="false"
+                android:icon="@drawable/ic_menu_about"
+                android:title="@string/nav_string_about" />
+        </menu>
+    </item>
+
+</menu>

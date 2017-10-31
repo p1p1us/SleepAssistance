@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_content_main_date_lable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="5dp"
+        android:textSize="20dp"
+        android:text=""/>
+    <com.devdroid.sleepassistant.view.CircleRelativeLayout
+        android:id="@+id/circle_view"
+        android:gravity="center"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_below="@+id/tv_content_main_date_lable"
+        android:layout_centerHorizontal="true">
+        <TextView
+            android:id="@+id/text1"
+            android:textSize="30dp"
+            android:textColor="#ffffff"
+            android:text="开始睡觉"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </com.devdroid.sleepassistant.view.CircleRelativeLayout>
+    <com.devdroid.sleepassistant.view.CircleRelativeLayout
+        android:visibility="invisible"
+        android:id="@+id/circle_view_getup"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="30dp"
+        android:gravity="center"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_below="@+id/circle_view">
+        <TextView
+            android:id="@+id/text2"
+            android:textSize="15dp"
+            android:textColor="#ffffff"
+            android:text="起床"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </com.devdroid.sleepassistant.view.CircleRelativeLayout>
+
+</RelativeLayout>

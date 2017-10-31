@@ -1,0 +1,91 @@
+apply plugin: 'com.android.application'
+
+def dateTime() {
+    return new Date().format("yyyyMMdd", TimeZone.getTimeZone("GMT+8"))
+}
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        applicationId "com.devdroid.sleepassistant"
+        minSdkVersion 18
+        targetSdkVersion 25
+        versionCode 10
+        versionName "1.3.0"
+        manifestPlaceholders = [COM_DEVDROID_CHANNEL_VALUE: "devdroid"]
+    }
+    signingConfigs {
+        debug {
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+        release {
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
+    buildTypes {
+        release {
+            // 混淆
+            minifyEnabled true
+            // zipAlign优化
+            zipAlignEnabled true
+            // 移除无用的资源文件文件
+            shrinkResources true
+            // 加载默认混淆配置文件，PS:将proguard.cfg放置在主Module目录下
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard.cfg'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
+            // 签名
+            signingConfig signingConfigs.release
+            // 定义APK名称格式
+            applicationVariants.all { variant ->
+                if (variant.buildType.name == "debug") return;
+                variant.outputs.each { output ->
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        def fileName = "Sleepassistant_v${defaultConfig.versionName}_${variant.productFlavors[0].name}_release_${dateTime()}.apk"
+                        output.outputFile = new File(outputFile.parent, fileName)
+                    }
+                }
+            }
+        }
+    }
+    //渠道Flavors
+    productFlavors {
+        zhushou360 {
+            manifestPlaceholders = [COM_DEVDROID_CHANNEL_VALUE: "360zhushou"]
+        }
+        xiaomi {
+            manifestPlaceholders = [COM_DEVDROID_CHANNEL_VALUE: "xiaomi"]
+        }
+        wandoujia {
+            manifestPlaceholders = [COM_DEVDROID_CHANNEL_VALUE: "wandoujia"]
+        }
+        huawei {
+            manifestPlaceholders = [COM_DEVDROID_CHANNEL_VALUE: "huawei"]
+        }
+
+        devdroid {
+            manifestPlaceholders = [COM_DEVDROID_CHANNEL_VALUE: "devdroid"]
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile files('libs/eventbus-2.4.0.jar')
+    compile project(':alarmmanagerclock')
+    compile files('libs/android-async-http-1.4.9.jar')
+    compile files('libs/gson-2.3.1.jar')
+    compile files('libs/universal-image-loader-1.9.5.jar')
+    compile 'com.github.addappcn:android-pickers:1.0.1'
+    compile 'com.github.addappcn:android-pickers:1.0.1'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha4'
+    compile 'com.clj.fastble:FastBleLib:1.2.1'
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
+    compile 'cz.msebera.android:httpclient:4.4.1.2'
+}

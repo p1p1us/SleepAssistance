@@ -1,0 +1,117 @@
+<resources>
+    <string name="app_name">睡眠监测</string>
+
+    <string name="navigation_drawer_open">打开导航</string>
+    <string name="navigation_drawer_close">关闭导航</string>
+
+    <string name="action_settings">设置</string>
+    <string name="checknet_setting_feedback">请检查你的网络</string>
+    <string name="nav_string_restriction">强制</string>
+    <string name="feedback_content">以下是为解决您的问题所需的系统信息。我们绝不会收集您的任何个人信息。</string>
+    <string name="container_hint_setting_feedback">请在这里写你的评论，提供尽可能多的细节。我们一直在倾听和改进。</string>
+    <string name="navigation_header_welcome_word">p1p1us</string>
+    <string name="navigation_header_welcome_email">p1p1us@bupt.edu.cn</string>
+    <string name="no_contain_setting_feedback">嗨，说点什么？</string>
+    <string name="notice_setting_feedback">以下是为解决您的问题所需的系统信息。我们绝不会收集您的任何个人信息。</string>
+    <string name="activity_setting_feedback_suggestion">反馈意见</string>
+    <string name="activity_setting_feedback_problem">反馈问题</string>
+    <string name="activity_setting_feedback_no_email">找不到电子邮件</string>
+    <string name="activity_setting_feedback_forceinstall">反馈流氓</string>
+    <string name="activity_setting_feedback_common">反馈类型</string>
+    <string name="about_policy"><b>隐私政策</b></string>
+    <string name="about_rights"><b>\@2014–2017 p1p1us Team. All Rights Reserved.</b></string>
+    <string name="share_app_text">这里有一个很好玩的应用，大家可以体验一下。</string>
+    <string name="friday">五</string>
+    <string name="monday">一</string>
+    <string name="saturday">六</string>
+    <string name="sunday">日</string>
+    <string name="thesday">二</string>
+    <string name="thursday">四</string>
+    <string name="wednesday">三</string>
+
+    <string name="item_setting_data_export">导出数据</string>
+    <string name="item_setting_data_import">导入数据</string>
+    <string name="item_setting_logput">退出</string>
+
+    <string name="gerat">优秀</string>
+    <string name="warn">警告</string>
+    <string name="bad">糟糕</string>
+    <string name="permissionnot">权限未被准许，应用可能无法正常使用,请开启后打开应用</string>
+    <string name="ime_setting_backuping">正在导出数据</string>
+    <string name="ime_setting_backup_success">数据已成功导出到手机根目录</string>
+    <string name="ime_setting_backup_failed">导出数据失败，请重试</string>
+    <string name="ime_setting_restore_success">导入数据成功</string>
+    <string name="restore_data_data_bad">导入数据失败</string>
+    <string name="backup_data_import">数据导入</string>
+    <string name="cancle">取消</string>
+    <string name="restore_data_select_error">请选择正确的备份文件</string>
+
+    <string name="menu_item_restriction_add">添加</string>
+    <string name="menu_item_restriction_quit">退出</string>
+    <string name="action_applock_settings">应用锁设置</string>
+    <string name="menu_item_applock_submit">提交</string>
+    <string name="menu_item_applock_quit">退出</string>
+    <string name="menu_item_chart_gengral_date">日期</string>
+    <string name="menu_item_chart_gengral_spline">折线图</string>
+    <string name="menu_item_chart_spline">曲线图</string>
+    <string name="menu_item_chart_pie">饼形图</string>
+    <string name="menu_item_chart_quit">退出</string>
+    <string name="wait_next_version">该功能筹备中，请等待下版本更新</string>
+    <string name="activity_agreement_lable">用户协议</string>
+    <string name="menu_chart_item_value_date">%1$d年%2$d月</string>
+
+    <string name="date_picker_all_data">全部</string>
+    <string name="date_picker_submit">确定</string>
+    <string name="date_picker_cancel">取消</string>
+
+    <string name="shortcut_sleep_time_lable">现在睡觉</string>
+    <string name="shortcutbackup_lable">备份数据</string>
+
+    <string name="nav_string_share">分享</string>
+    <string name="nav_string_feedback">反馈</string>
+    <string name="nav_string_about">关于</string>
+    <string name="nav_string_calendar">日历</string>
+    <string name="nav_string_chart">趋势</string>
+    <string name="nav_string_logout">注销</string>
+    <string name="item_setting_helpcenter">帮助中心</string>
+    <string name="item_setting_account">账号管理</string>
+    <string name="item_setting_stayabove">手机监测保持在前台</string>
+    <string name="item_setting_connecttype">选择连接设备方式</string>
+    <string name="item_support_music">助眠模式</string>
+    <string name="item_support_alarm">智能闹钟</string>
+    <string name="item_support_sleep">睡觉提醒</string>
+    <string name="guard_date">睡眠监测 1.3.0</string>
+
+    <string name="play">播放</string>
+    <string name="stop">停止</string>
+    <string name="quit">退出</string>
+    <string name="pause">暂停</string>
+    <string name="next_music">下一首</string>
+    <string name="last_music">上一首</string>
+    <string name="loaded">Loaded media file</string>
+    <string name="playing">Playing</string>
+    <string name="example">示例音乐 Traveling Light</string>
+    <string name="add_widget">Add widget</string>
+    <string name="appwidget_text">点击图片打开音乐播放器</string>
+
+    <string name="mon">周一</string>
+    <string name="tue">周二</string>
+    <string name="wed">周三</string>
+    <string name="thu">周四</string>
+    <string name="fri">周五</string>
+    <string name="sat">周六</string>
+    <string name="sun">周日</string>
+    <string name="cycle_sure">确定</string>
+    <string name="vibration">震动</string>
+    <string name="ring">铃声</string>
+
+
+    <string name="que_alarm">我设置的手机闹钟为什么没有响？</string>
+    <string name="que_detect">手机监测睡眠功能是怎么使用的？</string>
+    <string name="que_hm">睡眠监测功能一定要手动点击开始和结束睡觉吗？</string>
+    <string name="que_support">APP的助眠功能怎么使用？</string>
+    <string name="que_alarmuse">APP的智能闹钟怎么使用？</string>
+    <string name="que_theory">手机睡眠监测功能的原理？</string>
+    <string name="que_report">我昨晚使用手机监测睡眠但是没有生成报告</string>
+    <string name="que_autostop">手机没有点击“起床”，睡眠监测功能会自动结束吗</string>
+</resources>

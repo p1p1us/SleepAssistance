@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:orientation="vertical"
+    android:background="@drawable/main_background"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+app:layout_behavior="@string/appbar_scrolling_view_behavior"
+tools:context=".activity.MainActivity"
+tools:showIn="@layout/app_bar_main">
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50.0dip"
+        >
+
+        <!--layout_weight这个属性为权重，让两个textview平分这个linearLayout-->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:layout_weight="1.0">
+            <ImageView
+                android:id="@+id/left_img"
+                android:tint="@color/white"
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:src="@drawable/arrow_triangle_left" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/the_date"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="今天"
+            android:textColor="#ffffff"
+            android:textSize="20dip"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0">
+                <ImageView
+                    android:visibility="invisible"
+                    android:id="@+id/right_img"
+                    android:tint="@color/white"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/arrow_triangle_right" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0">
+            <ImageView
+                android:visibility="invisible"
+                android:id="@+id/calendar_img"
+                android:tint="@color/white"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/calendar" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0">
+                <ImageView
+                    android:tint="@color/white"
+                    android:id="@+id/share_img"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/question_2" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/the_calendar"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="25dp"
+        android:paddingBottom="15dp"
+        android:orientation="vertical"
+        android:background="@color/app_main_background">
+        <TextView
+            android:id="@+id/calendar_date_lable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:text="2017年5月"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="15dp"
+            android:orientation="vertical"
+            android:background="@color/white">
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="20dip"
+                android:layout_marginBottom="2dip"
+                android:background="@color/white"
+                android:paddingTop="2dip" >
+                <TableRow>
+                    <TextView
+                        style="@style/dateStyle"
+                        android:text="@string/sun"/>
+                    <TextView
+                        style="@style/dateStyle"
+                        android:text="@string/mon"/>
+                    <TextView
+                        style="@style/dateStyle"
+                        android:text="@string/tue"/>
+                    <TextView
+                        style="@style/dateStyle"
+                        android:text="@string/wed"/>
+                    <TextView
+                        style="@style/dateStyle"
+                        android:text="@string/thu"/>
+                    <TextView
+                        style="@style/dateStyle"
+                        android:text="@string/fri"/>
+                    <TextView
+                        style="@style/dateStyle"
+                        android:text="@string/sat"/>
+                </TableRow>
+            </TableLayout>
+        </LinearLayout>
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vp_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="310dp"
+            android:layout_gravity="center" >
+        </android.support.v4.view.ViewPager>
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></android.support.v4.view.ViewPager>
+
+    <TextView
+    android:id="@+id/tv_content_main_date_lable"
+    android:visibility="gone"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/app_main_background"
+    android:gravity="center"
+    android:paddingTop="5dp"
+    android:textSize="20dp"
+    android:text="2017年5月"/>
+
+    <com.devdroid.sleepassistant.view.CircleRelativeLayout
+        android:id="@+id/circle_view"
+        android:layout_marginTop="20dp"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:layout_width="300dp"
+        android:layout_height="300dp">
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/text1"
+            android:textSize="30dp"
+            android:textColor="#ffffff"
+            android:text="开始睡觉"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </com.devdroid.sleepassistant.view.CircleRelativeLayout>
+
+</LinearLayout>

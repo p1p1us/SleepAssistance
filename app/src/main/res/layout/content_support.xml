@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.devdroid.sleepassistant.activity.SleepSupportActivity"
+    tools:showIn="@layout/activity_restriction">
+
+    <LinearLayout
+        android:id="@+id/ll_support_music"
+        style="@style/SettingItemLinearLayout">
+        <TextView
+            style="@style/SettingItem"
+            android:textSize="18dp"
+            android:textColor="@color/white"
+            android:text="@string/item_support_music"/>
+    </LinearLayout>
+    <TextView
+        style="@style/SettingItemDivide"/>
+    <LinearLayout
+        android:id="@+id/ll_support_alarm"
+        style="@style/SettingItemLinearLayout">
+        <TextView
+            style="@style/SettingItem"
+            android:textSize="18dp"
+            android:textColor="@color/white"
+            android:text="@string/item_support_alarm"/>
+    </LinearLayout>
+    <TextView
+        style="@style/SettingItemDivide"/>
+    <LinearLayout
+        android:id="@+id/ll_support_sleep"
+        style="@style/SettingItemLinearLayout">
+        <TextView
+            style="@style/SettingItem"
+            android:textSize="18dp"
+            android:textColor="@color/white"
+            android:text="@string/item_support_sleep"/>
+    </LinearLayout>
+</LinearLayout>
