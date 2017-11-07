@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -53,6 +54,11 @@ import com.devdroid.sleepassistant.view.CalendarCard;
 import com.devdroid.sleepassistant.view.CircleRelativeLayout;
 import com.devdroid.sleepassistant.view.chart.GeneralSplineChartView;
 import com.github.mikephil.charting.charts.CombinedChart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -62,6 +68,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.gson.JsonObject;
@@ -75,10 +82,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -91,6 +101,10 @@ public class MainActivity extends BaseActivity implements CalendarCard.OnCellCli
 
     boolean doubleBackToExitPressedOnce = false;
 
+
+    protected String[] mSleepStates = new String[] {
+            "清醒", "浅睡", "中睡", "深睡"
+    };
 
     private CombinedChart mChart;
 
@@ -143,6 +157,9 @@ public class MainActivity extends BaseActivity implements CalendarCard.OnCellCli
     private TextView mTvDateLable;
     private GeneralSplineChartView mGSCWeek;
     private DrawerLayout mDrawerLayout;
+
+    private LineChart mChart1;
+    private LineChart mChart2;
 
     public ImageLoader imageLoader = ImageLoader.getInstance();
 
@@ -682,20 +699,29 @@ public class MainActivity extends BaseActivity implements CalendarCard.OnCellCli
                     });
 
                     ListView lv = (ListView) findViewById(R.id.listView_chart);
+                    mChart1 = (LineChart) findViewById(R.id.chart1);
+                    mChart2 = (LineChart) findViewById(R.id.chart2);
+                    setupmChart1();
+                    setupmChart2();
+
+
+
+
 
                     ArrayList<ChartItem> list = new ArrayList<ChartItem>();
 
-                    // 3 items
-                    for (int i = 0; i < 3; i++) {
-
-                        if(i % 3 == 0) {
-                            list.add(new LineChartItem(generateDataLine1(i + 1), getApplicationContext()));
-                        } else if(i % 3 == 1) {
-                            list.add(new PieChartItem(generateDataPie(i + 1), getApplicationContext()));
-                        } else if(i % 3 == 2) {
-                            list.add(new LineChartItem(generateDataLine2(i + 1), getApplicationContext()));
-                        }
-                    }
+//                    // 3 items
+//                    for (int i = 0; i < 3; i++) {
+//
+//                        if(i % 3 == 0) {
+//                            list.add(new LineChartItem(generateDataLine1(i + 1), getApplicationContext()));
+//                        } else if(i % 3 == 1) {
+//                            list.add(new PieChartItem(generateDataPie(i + 1), getApplicationContext()));
+//                        } else if(i % 3 == 2) {
+//                            list.add(new LineChartItem(generateDataLine2(i + 1), getApplicationContext()));
+//                        }
+//                    }
+                    list.add(new PieChartItem(generateDataPie(2), getApplicationContext()));
 
                     ChartDataAdapter cda = new ChartDataAdapter(getApplicationContext(), list);
                     lv.setAdapter(cda);
@@ -777,6 +803,235 @@ public class MainActivity extends BaseActivity implements CalendarCard.OnCellCli
         @Override
         public void onPageScrollStateChanged(int arg0) {
         }
+    }
+
+    private void setupmChart1(){
+        // no description text
+        mChart1.getDescription().setEnabled(false);
+
+        // enable touch gestures
+        mChart1.setTouchEnabled(true);
+
+        mChart1.setDragDecelerationFrictionCoef(0.9f);
+
+        // enable scaling and dragging
+        mChart1.setDragEnabled(true);
+        mChart1.setScaleEnabled(true);
+        mChart1.setDrawGridBackground(false);
+        mChart1.setHighlightPerDragEnabled(true);
+
+        // set an alternative background color
+//                    mChart1.setBackgroundColor(Color.WHITE);
+//        mChart1.setViewPortOffsets(0f, 0f, 0f, 0f);
+
+        // add data
+        setData1(240, 4);
+        mChart1.invalidate();
+
+        // get the legend (only possible after setting data)
+        Legend l = mChart1.getLegend();
+//        l.setEnabled(false);
+        l.setForm(Legend.LegendForm.LINE);
+        l.setTextColor(Color.WHITE);
+
+        XAxis xAxis = mChart1.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTH_SIDED);
+        xAxis.setTypeface(Typeface.createFromAsset(getAssets(), "OpenSans-Light.ttf"));
+        xAxis.setTextSize(10f);
+        xAxis.setTextColor(Color.WHITE);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(true);
+        xAxis.setTextColor(Color.WHITE);
+        xAxis.setCenterAxisLabels(false);
+        xAxis.setGranularity(6f); // 6 min
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+
+            private SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm");
+
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+
+                long millis = TimeUnit.MINUTES.toMillis((long) value);
+                return mFormat.format(new Date(millis));
+            }
+        });
+
+        YAxis leftAxis = mChart1.getAxisLeft();
+        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        leftAxis.setTypeface(Typeface.createFromAsset(getAssets(), "OpenSans-Light.ttf"));
+        leftAxis.setTextColor(ColorTemplate.getHoloBlue());
+        leftAxis.setDrawGridLines(true);
+        leftAxis.setGranularityEnabled(true);
+        leftAxis.setAxisMinimum(0f);
+        leftAxis.setAxisMaximum(3f);
+        leftAxis.setYOffset(-9f);
+        leftAxis.setTextColor(Color.WHITE);
+//                    leftAxis.setAxisMinimum(0f);
+        leftAxis.setGranularity(1f);
+        leftAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return mSleepStates[(int) value % mSleepStates.length];
+            }
+        });
+
+        YAxis rightAxis = mChart1.getAxisRight();
+        rightAxis.setEnabled(false);
+    }
+    private void setupmChart2(){
+        // no description text
+        mChart2.getDescription().setEnabled(false);
+
+        // enable touch gestures
+        mChart2.setTouchEnabled(true);
+
+        mChart2.setDragDecelerationFrictionCoef(0.9f);
+
+        // enable scaling and dragging
+        mChart2.setDragEnabled(true);
+        mChart2.setScaleEnabled(true);
+        mChart2.setDrawGridBackground(false);
+        mChart2.setHighlightPerDragEnabled(true);
+
+        // set an alternative background color
+//                    mChart1.setBackgroundColor(Color.WHITE);
+//        mChart2.setViewPortOffsets(0f, 0f, 0f, 0f);
+
+        // add data
+        setData2(240, 4);
+        mChart2.invalidate();
+
+        // get the legend (only possible after setting data)
+        Legend l = mChart2.getLegend();
+//        l.setEnabled(false);
+        l.setForm(Legend.LegendForm.LINE);
+        l.setTextColor(Color.WHITE);
+
+        XAxis xAxis = mChart2.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTH_SIDED);
+        xAxis.setTypeface(Typeface.createFromAsset(getAssets(), "OpenSans-Light.ttf"));
+        xAxis.setTextSize(10f);
+        xAxis.setTextColor(Color.WHITE);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(true);
+        xAxis.setTextColor(Color.WHITE);
+        xAxis.setCenterAxisLabels(false);
+        xAxis.setGranularity(6f); // 6 min
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+
+            private SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm");
+
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+
+                long millis = TimeUnit.MINUTES.toMillis((long) value);
+                return mFormat.format(new Date(millis));
+            }
+        });
+
+        YAxis leftAxis = mChart2.getAxisLeft();
+        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        leftAxis.setTypeface(Typeface.createFromAsset(getAssets(), "OpenSans-Light.ttf"));
+        leftAxis.setTextColor(ColorTemplate.getHoloBlue());
+        leftAxis.setDrawGridLines(true);
+        leftAxis.setGranularityEnabled(true);
+        leftAxis.setAxisMinimum(0f);
+        leftAxis.setAxisMaximum(100f);
+        leftAxis.setYOffset(-9f);
+        leftAxis.setTextColor(Color.WHITE);
+
+        YAxis rightAxis = mChart2.getAxisRight();
+        rightAxis.setEnabled(false);
+    }
+
+    private void setData1(int count, float range) {
+
+        // now in hours
+        long now = 419580;//某天的17:00
+//        long now = TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis());
+
+        ArrayList<Entry> values = new ArrayList<Entry>();
+
+        float from = now;
+
+        // count = hours
+        float to = now + count;
+
+        // increment by 1 hour
+        for (float x = from; x < to; x++) {
+
+//            float y = getRandom(range, 1);
+            float y = new java.util.Random().nextInt(4);
+            values.add(new Entry(x, y)); // add one entry per hour
+        }
+
+        // create a dataset and give it a type
+        LineDataSet set1 = new LineDataSet(values, "睡眠统计");
+        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+        set1.setColor(ColorTemplate.getHoloBlue());
+        set1.setValueTextColor(ColorTemplate.getHoloBlue());
+        set1.setLineWidth(1.5f);
+        set1.setDrawCircles(false);
+        set1.setDrawValues(false);
+        set1.setFillAlpha(65);
+        set1.setFillColor(ColorTemplate.getHoloBlue());
+        set1.setHighLightColor(Color.rgb(244, 117, 117));
+        set1.setDrawCircleHole(false);
+
+        // create a data object with the datasets
+        LineData data = new LineData(set1);
+        data.setValueTextColor(Color.WHITE);
+        data.setValueTextSize(9f);
+
+        // set data
+        mChart1.setData(data);
+    }
+
+    private void setData2(int count, float range) {
+
+        // now in hours
+        long now = 419580;//某天的17:00
+//        long now = TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis());
+
+        ArrayList<Entry> values = new ArrayList<Entry>();
+
+        float from = now;
+
+        // count = hours
+        float to = now + count;
+
+        // increment by 1 hour
+        for (float x = from; x < to; x++) {
+
+//            float y = getRandom(range, 1);
+            float y = (float)(Math.random() * 65);
+            values.add(new Entry(x, y)); // add one entry per hour
+        }
+
+        // create a dataset and give it a type
+        LineDataSet set1 = new LineDataSet(values, "体动");
+        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+        set1.setColor(ColorTemplate.getHoloBlue());
+        set1.setValueTextColor(ColorTemplate.getHoloBlue());
+        set1.setLineWidth(1.5f);
+        set1.setDrawCircles(false);
+        set1.setDrawValues(false);
+        set1.setFillAlpha(65);
+        set1.setFillColor(ColorTemplate.getHoloBlue());
+        set1.setHighLightColor(Color.rgb(244, 117, 117));
+        set1.setDrawCircleHole(false);
+
+        // create a data object with the datasets
+        LineData data = new LineData(set1);
+        data.setValueTextColor(Color.WHITE);
+        data.setValueTextSize(9f);
+
+        // set data
+        mChart2.setData(data);
+    }
+
+    protected float getRandom(float range, float startsfrom) {
+        return (float) (Math.random() * range) + startsfrom;
     }
 
 

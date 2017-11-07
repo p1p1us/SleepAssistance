@@ -4,6 +4,9 @@ package com.devdroid.sleepassistant.bluetooth;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattService;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -29,11 +33,24 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.clj.fastble.conn.BleCharacterCallback;
+import com.clj.fastble.exception.BleException;
+import com.clj.fastble.utils.HexUtil;
 import com.devdroid.sleepassistant.R;
 import com.clj.fastble.data.ScanResult;
+import com.devdroid.sleepassistant.activity.MyEquipsActivity;
+import com.devdroid.sleepassistant.base.CYTools;
+import com.devdroid.sleepassistant.base.CYUserManager;
+import com.devdroid.sleepassistant.base.OnlyAlertDialog;
+import com.devdroid.sleepassistant.base.RestClient;
+import com.google.gson.JsonObject;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
 
 public class AnyScanActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -253,9 +270,159 @@ public class AnyScanActivity extends AppCompatActivity implements View.OnClickLi
         @Override
         public void onServicesDiscovered() {
             progressDialog.dismiss();
-            startActivity(new Intent(AnyScanActivity.this, OperationActivity.class));
+//            startActivity(new Intent(AnyScanActivity.this, OperationActivity.class));
+            startOperate();
         }
     };
+
+    private void startOperate(){
+//        String str = "110";//接收到的消息中的设备号
+        //开始接收消息
+        startReadData();
+//        //添加该设备
+//        addEquipment(str);
+//        //连接该设备
+//        connectEquipment(str);
+//        //设置设备号为该设备
+//        CYUserManager.getInstance(AnyScanActivity.this).setEQUIP_ID(str);
+
+        finish();
+    }
+
+    private void startReadData(){
+
+        BluetoothGatt gatt = mBluetoothService.getGatt();
+        BluetoothGattService service = gatt.getServices().get(0);
+        mBluetoothService.setService(service);
+
+        final BluetoothGattCharacteristic characteristic = service.getCharacteristics().get(0);
+        mBluetoothService.setCharaProp(1);
+        mBluetoothService.setCharacteristic(characteristic);
+
+        mBluetoothService.read(
+                characteristic.getService().getUuid().toString(),
+                characteristic.getUuid().toString(),
+                new BleCharacterCallback() {
+
+                    @Override
+                    public void onSuccess(final BluetoothGattCharacteristic characteristic) {
+                        AnyScanActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                String strhhh = "";
+                                strhhh = strhhh+String.valueOf(HexUtil.encodeHex(characteristic.getValue()))+"\n";
+                                System.out.println("收到的消息："+strhhh);
+//                                String equip_id = CYTools.stringToJsonObject(strhhh).get("equip_id").toString();
+                                String equip_id = "";
+                                //添加该设备
+                                addEquipment(equip_id);
+                                //连接该设备
+                                connectEquipment(equip_id);
+                                //设置设备号为该设备
+                                CYUserManager.getInstance(AnyScanActivity.this).setEQUIP_ID(equip_id);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(final BleException exception) {
+                        AnyScanActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                String eceptions = "";
+                                eceptions = eceptions+ exception.toString()+"\n";
+                                System.out.println("收到的消息异常："+eceptions);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onInitiatedResult(boolean result) {
+
+                    }
+                });
+    }
+
+    public void addEquipment(String str) {
+        RequestParams params = new RequestParams();
+        params.put("equip_id", str);
+        RestClient.postWithToken(AnyScanActivity.this, "user/equips", params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                if (statusCode == 404) responseString = "邀请码无效";
+//                new android.app.AlertDialog.Builder(MyEquipsActivity.this)
+//                        .setTitle("提示")
+//                        .setMessage(responseString)
+//                        .setPositiveButton("确定", null)
+//                        .show();
+                OnlyAlert(AnyScanActivity.this,responseString,"确定");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                System.out.println("response:" + responseString);
+                JsonObject jsonObj = CYTools.stringToJsonObject(responseString);
+                if (jsonObj.get("code").toString().equals("0")) {
+//                    Toast.makeText(AnyScanActivity.this, "添加成功", Toast.LENGTH_SHORT).show();
+                } else {
+
+//                    new android.app.AlertDialog.Builder(MyEquipsActivity.this)
+//                            .setTitle("提示")
+//                            .setMessage(CYTools.getRealParam(jsonObj.get("desc").toString()))
+//                            .setPositiveButton("确定", null)
+//                            .show();
+                    OnlyAlert(AnyScanActivity.this,CYTools.getRealParam(jsonObj.get("desc").toString()),"确定");
+                }
+            }
+        });
+    }
+    public void connectEquipment(String str) {
+        RequestParams params = new RequestParams();
+        params.put("equip_id", str);
+        RestClient.postWithToken(AnyScanActivity.this, "equip/"+str+"/connect", params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                if (statusCode == 404) responseString = "邀请码无效";
+//                new android.app.AlertDialog.Builder(SettingsActivity.this)
+//                        .setTitle("提示")
+//                        .setMessage(responseString)
+//                        .setPositiveButton("确定", null)
+//                        .show();
+                OnlyAlert(AnyScanActivity.this,responseString,"确定");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                System.out.println("response:" + responseString);
+                JsonObject jsonObj = CYTools.stringToJsonObject(responseString);
+                if (jsonObj.get("code").toString().equals("0")) {
+//                    Toast.makeText(AnyScanActivity.this, "选择成功", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AnyScanActivity.this,"连接设备成功",Toast.LENGTH_SHORT).show();
+                } else {
+
+//                    new android.app.AlertDialog.Builder(SettingsActivity.this)
+//                            .setTitle("提示")
+//                            .setMessage(CYTools.getRealParam(jsonObj.get("desc").toString()))
+//                            .setPositiveButton("确定", null)
+//                            .show();
+                    OnlyAlert(AnyScanActivity.this,CYTools.getRealParam(jsonObj.get("desc").toString()),"确定");
+                }
+            }
+        });
+    }
+    public static void OnlyAlert(final Context context, String message, String confirm) {
+        final OnlyAlertDialog onlyAlertDialog = new OnlyAlertDialog(context, message, confirm);
+        onlyAlertDialog.show();
+        onlyAlertDialog.setClicklistener(new OnlyAlertDialog.ClickListenerInterface() {
+            @Override
+            public void doConfirm() {
+                // TODO Auto-generated method stub
+                onlyAlertDialog.dismiss();
+            }
+        });
+    }
+
+
 
     @Override
     public final void onRequestPermissionsResult(int requestCode,

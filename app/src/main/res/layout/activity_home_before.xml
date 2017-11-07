@@ -275,12 +275,25 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-    <ListView
-        android:id="@+id/listView_chart"
-        android:layout_below="@+id/linearLayout3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"></ListView>
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/chart1"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@+id/linearLayout3" />
+        <ListView
+            android:id="@+id/listView_chart"
+            android:layout_below="@+id/chart1"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="10dp"></ListView>
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/chart2"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@+id/listView_chart" />
+
 </RelativeLayout>
 </RelativeLayout>
 </ScrollView>

@@ -29,6 +29,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:background="@color/app_main_background"
         android:padding="10dp">
 
         <Button

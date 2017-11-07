@@ -2,6 +2,7 @@ package com.devdroid.sleepassistant.activity;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -21,7 +22,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.devdroid.sleepassistant.R;
+import com.devdroid.sleepassistant.base.DayAxisValueFormatter;
+import com.devdroid.sleepassistant.base.MyAxisValueFormatter;
 import com.devdroid.sleepassistant.base.OnlyAlertDialog;
+import com.devdroid.sleepassistant.xclcharts.chart.PieChart;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -31,6 +41,8 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.devdroid.sleepassistant.listviewitems.BarChartItem;
@@ -41,8 +53,11 @@ import com.devdroid.sleepassistant.base.DemoBase;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Demonstrates the use of charts inside a ListView. IMPORTANT: provide a
@@ -58,6 +73,11 @@ public class ListViewMultiChartActivity extends DemoBase {
     private ArrayList<String> theslist;
     public int clickPosition = -1;
     public Boolean flag = false;
+    private LineChart mChart1;
+    private BarChart mChart2;
+    protected String[] mWeekDays = new String[] {
+            "周一", "周二", "周三", "周四", "周五", "周六", "周日"
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +91,9 @@ public class ListViewMultiChartActivity extends DemoBase {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         final ListView lv = (ListView) findViewById(R.id.listView1);
+        mChart1 = (LineChart) findViewById(R.id.chart1);
+        mChart2 = (BarChart) findViewById(R.id.chart2);
+
         final TextView weekReport = (TextView) findViewById(R.id.hour_num);
 //        final LinearLayout showscore = (LinearLayout) findViewById(R.id.the_score);
 //        final LinearLayout showsleeptime = (LinearLayout) findViewById(R.id.the_third);
@@ -106,12 +129,14 @@ public class ListViewMultiChartActivity extends DemoBase {
                     list.add(new LineChartItem(generateDataLine2(1), getApplicationContext()));
                     ChartDataAdapter cda = new ChartDataAdapter(getApplicationContext(), list);
                     lv.setAdapter(cda);
+                    setupmLineChart(2);
                 }
                 else {
                     ArrayList<ChartItem> list = new ArrayList<ChartItem>();
                     list.add(new LineChartItem(generateDataLine(1), getApplicationContext()));
                     ChartDataAdapter cda = new ChartDataAdapter(getApplicationContext(), list);
                     lv.setAdapter(cda);
+                    setupmLineChart(1);
                 }
             }
         });
@@ -132,11 +157,13 @@ public class ListViewMultiChartActivity extends DemoBase {
                     list.add(new BarChartItem(generateDataBar2(1), getApplicationContext()));
                     ChartDataAdapter cda = new ChartDataAdapter(getApplicationContext(), list);
                     lv.setAdapter(cda);
+                    setupmBarChart(2);
                 }else {
                     ArrayList<ChartItem> list = new ArrayList<ChartItem>();
                     list.add(new BarChartItem(generateDataBar(1), getApplicationContext()));
                     ChartDataAdapter cda = new ChartDataAdapter(getApplicationContext(), list);
                     lv.setAdapter(cda);
+                    setupmBarChart(1);
                 }
             }
         });
@@ -154,11 +181,13 @@ public class ListViewMultiChartActivity extends DemoBase {
                     list.add(new LineChartItem(generateDataLine(1), getApplicationContext()));
                     ChartDataAdapter cda = new ChartDataAdapter(getApplicationContext(), list);
                     lv.setAdapter(cda);
+                    setupmLineChart(1);
                 }else {
                     ArrayList<ChartItem> list = new ArrayList<ChartItem>();
                     list.add(new BarChartItem(generateDataBar(1), getApplicationContext()));
                     ChartDataAdapter cda = new ChartDataAdapter(getApplicationContext(), list);
                     lv.setAdapter(cda);
+                    setupmBarChart(1);
                 }
 
             }
@@ -178,11 +207,13 @@ public class ListViewMultiChartActivity extends DemoBase {
                     list.add(new LineChartItem(generateDataLine2(1), getApplicationContext()));
                     ChartDataAdapter cda = new ChartDataAdapter(getApplicationContext(), list);
                     lv.setAdapter(cda);
+                    setupmLineChart(2);
                 }else {
                     ArrayList<ChartItem> list = new ArrayList<ChartItem>();
                     list.add(new BarChartItem(generateDataBar2(1), getApplicationContext()));
                     ChartDataAdapter cda = new ChartDataAdapter(getApplicationContext(), list);
                     lv.setAdapter(cda);
+                    setupmBarChart(2);
                 }
 
             }
@@ -250,7 +281,250 @@ public class ListViewMultiChartActivity extends DemoBase {
 
         ChartDataAdapter cda = new ChartDataAdapter(getApplicationContext(), list);
         lv.setAdapter(cda);
+        setupmBarChart(1);
 //        setListViewHeightBasedOnChildren(lv);
+    }
+
+    private void setupmLineChart(int num){
+        mChart2.setVisibility(View.GONE);//隐藏柱状图
+        mChart1.setVisibility(View.VISIBLE);//显示线性图
+        // no description text
+        mChart1.getDescription().setEnabled(false);
+
+        // enable touch gestures
+        mChart1.setTouchEnabled(true);
+
+        mChart1.setDragDecelerationFrictionCoef(0.9f);
+
+        // enable scaling and dragging
+        mChart1.setDragEnabled(true);
+        mChart1.setScaleEnabled(true);
+        mChart1.setDrawGridBackground(false);
+        mChart1.setHighlightPerDragEnabled(true);
+
+        // set an alternative background color
+//                    mChart1.setBackgroundColor(Color.WHITE);
+//        mChart1.setViewPortOffsets(0f, 0f, 0f, 0f);
+
+        // add data
+        setData1(num);
+//        mChart1.invalidate();
+        IAxisValueFormatter xAxisFormatter = new DayAxisValueFormatter(mChart1);
+
+        // get the legend (only possible after setting data)
+        Legend l = mChart1.getLegend();
+//        l.setEnabled(false);
+        l.setForm(Legend.LegendForm.LINE);
+        l.setTextColor(Color.WHITE);
+
+        XAxis xAxis = mChart1.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTH_SIDED);
+        xAxis.setTypeface(Typeface.createFromAsset(getAssets(), "OpenSans-Light.ttf"));
+        xAxis.setTextSize(10f);
+        xAxis.setTextColor(Color.WHITE);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(true);
+        xAxis.setTextColor(Color.WHITE);
+        xAxis.setCenterAxisLabels(false);
+        xAxis.setGranularity(1f);
+        xAxis.setLabelCount(7);
+
+
+        if (num == 1){
+            xAxis.setValueFormatter(new IAxisValueFormatter() {
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+                    System.out.println("mWeekDays1[(int) (value+1) % mWeekDays1.length+"+value+"  "+(int) value % mWeekDays.length);
+                    if (value==-1.0){
+                        value =0;
+                    }
+                    return mWeekDays[(int) (value) % mWeekDays.length];
+                }
+            });
+        }
+        if (num == 2){
+            xAxis.setValueFormatter(xAxisFormatter);
+        }
+
+        YAxis leftAxis = mChart1.getAxisLeft();
+        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        leftAxis.setTypeface(Typeface.createFromAsset(getAssets(), "OpenSans-Light.ttf"));
+        leftAxis.setTextColor(ColorTemplate.getHoloBlue());
+        leftAxis.setDrawGridLines(true);
+        leftAxis.setGranularityEnabled(true);
+        leftAxis.setAxisMinimum(0f);
+        leftAxis.setAxisMaximum(100f);
+        leftAxis.setYOffset(-9f);
+        leftAxis.setTextColor(Color.WHITE);
+//                    leftAxis.setAxisMinimum(0f);
+        leftAxis.setGranularity(1f);
+
+        YAxis rightAxis = mChart1.getAxisRight();
+        rightAxis.setEnabled(false);
+        mChart1.invalidate();
+    }
+
+    private void setupmBarChart(int num){
+        mChart2.setVisibility(View.VISIBLE);//显示柱状图
+        mChart1.setVisibility(View.GONE);//隐藏线性图
+
+        mChart2.setDrawBarShadow(false);
+        mChart2.setDrawValueAboveBar(true);
+
+        mChart2.getDescription().setEnabled(false);
+
+        // if more than 60 entries are displayed in the chart, no values will be
+        // drawn
+        mChart2.setMaxVisibleValueCount(15);
+
+        // scaling can now only be done on x- and y-axis separately
+        mChart2.setPinchZoom(false);
+
+        mChart2.setDrawGridBackground(false);
+        setData2(num);
+        // mChart.setDrawYLabels(false);
+
+        IAxisValueFormatter xAxisFormatter = new DayAxisValueFormatter(mChart2);
+
+        XAxis xAxis = mChart2.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setTypeface(mTfLight);
+        xAxis.setTextColor(Color.WHITE);
+        xAxis.setDrawGridLines(false);
+        xAxis.setGranularity(1f); // only intervals of 1 day
+        xAxis.setLabelCount(7);
+//        xAxis.setValueFormatter(xAxisFormatter);
+
+        if (num == 1){
+            xAxis.setValueFormatter(new IAxisValueFormatter() {
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+                    System.out.println("mWeekDays2[(int) (value+1) % mWeekDays2.length+"+value+"  "+(int) value % mWeekDays.length);
+                    return mWeekDays[(int) (value) % mWeekDays.length];
+                }
+            });
+        }
+        if (num == 2){
+            xAxis.setValueFormatter(xAxisFormatter);
+        }
+
+        IAxisValueFormatter custom = new MyAxisValueFormatter();
+
+        YAxis leftAxis = mChart2.getAxisLeft();
+        leftAxis.setTypeface(mTfLight);
+        leftAxis.setLabelCount(8, false);
+        leftAxis.setTextColor(Color.WHITE);
+        leftAxis.setValueFormatter(custom);
+        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        leftAxis.setSpaceTop(15f);
+        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+        YAxis rightAxis = mChart2.getAxisRight();
+        rightAxis.setDrawGridLines(false);
+        rightAxis.setTypeface(mTfLight);
+        rightAxis.setTextColor(Color.WHITE);
+        rightAxis.setLabelCount(8, false);
+        rightAxis.setValueFormatter(custom);
+        rightAxis.setSpaceTop(15f);
+        rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+        Legend l = mChart2.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        l.setDrawInside(false);
+        l.setForm(Legend.LegendForm.SQUARE);
+        l.setFormSize(9f);
+        l.setTextSize(11f);
+        l.setTextColor(Color.WHITE);
+        l.setXEntrySpace(4f);
+
+        mChart2.invalidate();
+    }
+
+    private void setData1(int type) {
+
+        ArrayList<Entry> values = new ArrayList<Entry>();
+
+        if (type == 1) {
+            for (int x = 0; x < 7; x++) {
+
+//            float y = getRandom(range, 1);
+                int y = (int) (Math.random() * 90) + 10;
+                values.add(new Entry(x, y)); // add one entry per hour
+            }
+        }
+        if (type == 2){
+            for (int x = 1; x < 32; x++) {
+
+//            float y = getRandom(range, 1);
+                int y = (int) (Math.random() * 90) + 10;
+                values.add(new Entry(x, y)); // add one entry per hour
+            }
+        }
+
+        // create a dataset and give it a type
+        LineDataSet set1 = new LineDataSet(values, "睡眠得分");
+        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+        set1.setColor(ColorTemplate.getHoloBlue());
+        set1.setValueTextColor(ColorTemplate.getHoloBlue());
+        set1.setLineWidth(1.5f);
+        set1.setDrawCircles(false);
+        set1.setDrawValues(false);
+        set1.setFillAlpha(65);
+        set1.setFillColor(ColorTemplate.getHoloBlue());
+        set1.setHighLightColor(Color.rgb(244, 117, 117));
+        set1.setDrawCircleHole(false);
+
+        // create a data object with the datasets
+        LineData data = new LineData(set1);
+        data.setValueTextColor(Color.WHITE);
+        data.setValueTextSize(9f);
+
+        // set data
+        mChart1.setData(data);
+    }
+
+    private void setData2(int type) {
+
+        ArrayList<BarEntry> values = new ArrayList<BarEntry>();
+
+        if (type == 1) {
+            for (int x = 0; x < 7; x++) {
+
+//            float y = getRandom(range, 1);
+                int y = (int) (Math.random() * 5) + 7;
+                values.add(new BarEntry(x, y)); // add one entry per hour
+            }
+        }
+        if (type == 2){
+            for (int x = 1; x < 32; x++) {
+
+//            float y = getRandom(range, 1);
+                int y = (int) (Math.random() * 5) + 7;
+                values.add(new BarEntry(x, y)); // add one entry per hour
+            }
+        }
+
+        // create a dataset and give it a type
+        BarDataSet set1;
+
+        set1 = new BarDataSet(values, "睡眠时长");
+
+        set1.setDrawIcons(false);
+
+        set1.setColors(ColorTemplate.MATERIAL_COLORS);
+
+        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+        dataSets.add(set1);
+
+        BarData data = new BarData(dataSets);
+        data.setValueTextSize(10f);
+        data.setValueTypeface(mTfLight);
+        data.setBarWidth(0.9f);
+
+        // set data
+        mChart2.setData(data);
     }
 
     public static void OnlyAlert(final Context context,String message,String confirm) {
